@@ -103,7 +103,7 @@ pack_info "${CFG_KEY_DIR}"
 
 if [ ! -d ${CFG_PLAT_OUT} ] || \
    [ ! -f $CFG_PLAT_OUT/.buildconfig ]; then
-	pack_error "config & build lichee before you pack"
+	pack_error "config & build lichee before you pack - $CFG_PLAT_OUT"
 	exit 1
 fi
 
@@ -744,7 +744,6 @@ function uboot_ini_to_dts()
 function do_ini_to_dts()
 {
 	cd ${LICHEE_PACK_OUT_DIR}/
-
 	maybe_busybox unix2dos sys_config.fex
 	script  sys_config.fex > /dev/null
 
@@ -837,7 +836,6 @@ function do_common()
 
 	maybe_busybox unix2dos sys_config.fex
 	maybe_busybox unix2dos board_config.fex
-
 	cp -f   sys_config.bin config.fex
 	script  board_config.fex > /dev/null
 	cp -f board_config.bin board.fex
@@ -1070,7 +1068,7 @@ function do_finish()
 				${NOR_FLASH_SIZE} ${NOR_LOGIC_START} 1
 
 		if [ $? -ne 0 ]; then
-			pack_error "update_mbr failed"
+			pack_error "update_mbr1 failed"
 			exit 1
 		fi
 		echo '----------programmer nor image is full_img.fex ----------'
@@ -1098,7 +1096,7 @@ function do_finish()
 	if [ ! -f sys_partition_nor.bin ]; then
 		update_mbr          sys_partition.bin 4
 		if [ $? -ne 0 ]; then
-			pack_error "update_mbr failed"
+			pack_error "update_mbr2 failed"
 			exit 1
 		fi
 
@@ -1756,6 +1754,12 @@ function do_pack_linux()
 		echo "normal"
 	fi
 }
+
+cp ${ANDROID_IMAGE_OUT}/obj/PACKAGING/target_files_intermediates/lineage_apollo-target_files-eng.paulo/IMAGES/vbmeta.img ${ANDROID_IMAGE_OUT}
+cp ${ANDROID_IMAGE_OUT}/obj/PACKAGING/target_files_intermediates/lineage_apollo-target_files-eng.paulo/IMAGES/vbmeta_system.img ${ANDROID_IMAGE_OUT}
+cp ${ANDROID_IMAGE_OUT}/obj/PACKAGING/target_files_intermediates/lineage_apollo-target_files-eng.paulo/IMAGES/vbmeta_vendor.img ${ANDROID_IMAGE_OUT}
+cp ${ANDROID_IMAGE_OUT}/obj/PACKAGING/target_files_intermediates/lineage_apollo-target_files-eng.paulo/IMAGES/vendor_boot.img ${ANDROID_IMAGE_OUT}
+
 do_prepare
 do_ini_to_dts
 do_common
